@@ -1,0 +1,27 @@
+{
+  "name": "iesb_programacao_dispositivos_moveis",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Raylanerca/IESB_PROGRAMACAO_DISPOSITIVOS_MOVEIS.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Raylanerca/IESB_PROGRAMACAO_DISPOSITIVOS_MOVEIS/issues"
+  },
+  "homepage": "https://github.com/Raylanerca/IESB_PROGRAMACAO_DISPOSITIVOS_MOVEIS#readme",
+  "dependencies": {
+    "@react-navigation/native": "^7.1.8",
+    "@react-navigation/stack": "^7.3.1",
+    "express": "^4.21.2",
+    "react-native-paper": "^5.14.0",
+    "react-native-safe-area-context": "^5.4.0",
+    "react-native-vector-icons": "^10.2.0"
+  }
+}
