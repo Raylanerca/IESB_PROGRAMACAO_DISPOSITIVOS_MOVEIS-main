@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, FlatList, StyleSheet, Alert } from 'react-native';
+import { View, FlatList, StyleSheet, Alert, Image } from 'react-native';
 import { Button, Card, Text, FAB } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
@@ -17,11 +17,7 @@ export default function PetsScreen({ navigation }) {
   const loadPets = async () => {
     try {
       const data = await AsyncStorage.getItem('pets');
-      if (data) {
-        setPets(JSON.parse(data));
-      } else {
-        setPets([]);
-      }
+      setPets(data ? JSON.parse(data) : []);
     } catch (error) {
       console.error('Erro ao carregar pets:', error);
     }
@@ -29,10 +25,7 @@ export default function PetsScreen({ navigation }) {
 
   const deletePet = (id) => {
     Alert.alert('Confirmar exclusão', 'Tem certeza que deseja excluir este pet?', [
-      {
-        text: 'Cancelar',
-        style: 'cancel',
-      },
+      { text: 'Cancelar', style: 'cancel' },
       {
         text: 'Excluir',
         onPress: async () => {
@@ -46,21 +39,54 @@ export default function PetsScreen({ navigation }) {
   };
 
   const renderItem = ({ item }) => (
-    <Card style={styles.card}>
-      <Card.Title title={item.nome} subtitle={item.raca} />
+    <Card style={styles.card} mode="elevated">
+      <Card.Title
+        titleStyle={styles.nome}
+        subtitleStyle={styles.raca}
+        title={item.nome}
+        subtitle={item.raca}
+        left={() =>
+          item.fotoUri ? (
+            <Image source={{ uri: item.fotoUri }} style={styles.avatar} />
+          ) : null
+        }
+      />
       <Card.Content>
-        <Text>Idade: {item.idade}</Text>
-        <Text>Peso: {item.peso} kg</Text>
-        {item.observacoes ? <Text>Obs: {item.observacoes}</Text> : null}
+        <Text style={styles.label}>Idade:</Text>
+        <Text style={styles.value}>{item.idade} anos</Text>
+
+        <Text style={styles.label}>Peso:</Text>
+        <Text style={styles.value}>{item.peso} kg</Text>
+
+        {item.observacoes ? (
+          <>
+            <Text style={styles.label}>Observações:</Text>
+            <Text style={styles.value}>{item.observacoes}</Text>
+          </>
+        ) : null}
       </Card.Content>
-      <Card.Actions>
-        <Button onPress={() => navigation.navigate('PetDetails', { pet: item })}>
+      <Card.Actions style={styles.actions}>
+        <Button
+          mode="outlined"
+          textColor="#6A1B9A"
+          onPress={() => navigation.navigate('PetDetails', { pet: item })}
+        >
           Detalhes
         </Button>
-        <Button onPress={() => navigation.navigate('PetForm', { pet: item })}>
+        <Button
+          mode="outlined"
+          textColor="#6A1B9A"
+          onPress={() => navigation.navigate('PetForm', { pet: item })}
+        >
           Editar
         </Button>
-        <Button onPress={() => deletePet(item.id)}>Excluir</Button>
+        <Button
+          mode="outlined"
+          textColor="red"
+          onPress={() => deletePet(item.id)}
+        >
+          Excluir
+        </Button>
       </Card.Actions>
     </Card>
   );
@@ -71,7 +97,10 @@ export default function PetsScreen({ navigation }) {
         data={pets}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
-        ListEmptyComponent={<Text>Nenhum pet cadastrado.</Text>}
+        ListEmptyComponent={
+          <Text style={styles.emptyText}>Nenhum pet cadastrado.</Text>
+        }
+        contentContainerStyle={{ paddingBottom: 80 }}
       />
 
       <FAB
@@ -79,6 +108,8 @@ export default function PetsScreen({ navigation }) {
         label="Novo Pet"
         style={styles.fab}
         onPress={() => navigation.navigate('PetForm')}
+        color="#fff"
+        customSize={60}
       />
     </View>
   );
@@ -87,14 +118,57 @@ export default function PetsScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    backgroundColor: '#F3E5F5',
+    paddingHorizontal: 16,
+    paddingTop: 16,
   },
   card: {
-    marginBottom: 12,
+    marginBottom: 16,
+    borderRadius: 16,
+    elevation: 4,
+    backgroundColor: '#FFFFFF',
+  },
+  avatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+  },
+  nome: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#4A148C',
+  },
+  raca: {
+    fontSize: 16,
+    color: '#7B1FA2',
+  },
+  label: {
+    marginTop: 4,
+    fontWeight: 'bold',
+    fontSize: 16,
+    color: '#333',
+  },
+  value: {
+    fontSize: 16,
+    marginBottom: 4,
+    color: '#555',
+  },
+  actions: {
+    justifyContent: 'space-between',
+    paddingHorizontal: 8,
+    paddingBottom: 8,
   },
   fab: {
     position: 'absolute',
     right: 16,
     bottom: 16,
+    backgroundColor: '#9C27B0',
+  },
+  emptyText: {
+    textAlign: 'center',
+    marginTop: 32,
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#999',
   },
 });

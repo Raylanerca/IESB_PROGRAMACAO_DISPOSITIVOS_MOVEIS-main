@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { Provider as PaperProvider } from 'react-native-paper';
-import MainNavigation from './src/navigation/MainNavigation';
+import MainNavigation, { navigationRef } from './src/navigation/MainNavigation';
 import * as Notifications from 'expo-notifications';
-import { Platform } from 'react-native';
+import { Alert } from 'react-native';
 
 export default function App() {
   useEffect(() => {
@@ -16,7 +16,7 @@ export default function App() {
       }
 
       if (finalStatus !== 'granted') {
-        alert('Permissão para notificações foi negada.');
+        Alert.alert('Permissão para notificações foi negada.');
         return;
       }
     };
@@ -31,6 +31,15 @@ export default function App() {
         shouldSetBadge: false,
       }),
     });
+
+    const subscription = Notifications.addNotificationResponseReceivedListener(response => {
+      // Navega para BirthdayScreen quando a notificação for clicada
+      if (navigationRef.current) {
+        navigationRef.current.navigate('BirthdayScreen');
+      }
+    });
+
+    return () => subscription.remove();
   }, []);
 
   return (
