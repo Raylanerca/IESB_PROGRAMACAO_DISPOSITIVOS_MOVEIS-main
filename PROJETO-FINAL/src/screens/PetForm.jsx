@@ -337,6 +337,6 @@ const styles = StyleSheet.create({
   },
   button: {
     borderRadius: 24,
-    paddingVertical: 8,
+    paddingVertical: 7,
   },
 });
